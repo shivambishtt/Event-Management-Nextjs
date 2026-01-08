@@ -32,25 +32,25 @@ const events: EventCardProps[] = [
     eventNiche: "Cloud Computing",
     eventImage: "/images/event3.png",
   },
-  {
-    eventId: 4,
-    eventTitle: "JavaScript Meetup Night",
-    eventDescription:
-      "An evening meetup for JavaScript enthusiasts to network and share industry insights.",
-    eventDuration: "15 July 2026 • 6:00 PM – 9:00 PM",
-    eventLocation: "Delhi, India",
-    eventImage: "/images/event4.png",
-  },
-  {
-    eventId: 5,
-    eventTitle: "UI/UX Design Sprint",
-    eventDescription:
-      "A design-focused sprint covering user research, wireframing, and prototyping techniques.",
-    eventDuration: "9–10 August 2026 • 9:30 AM – 5:00 PM",
-    eventLocation: "Mumbai, India",
-    eventNiche: "UI/UX Design",
-    eventImage: "/images/event5.png",
-  },
+  // {
+  //   eventId: 4,
+  //   eventTitle: "JavaScript Meetup Night",
+  //   eventDescription:
+  //     "An evening meetup for JavaScript enthusiasts to network and share industry insights.",
+  //   eventDuration: "15 July 2026 • 6:00 PM – 9:00 PM",
+  //   eventLocation: "Delhi, India",
+  //   eventImage: "/images/event4.png",
+  // },
+  // {
+  //   eventId: 5,
+  //   eventTitle: "UI/UX Design Sprint",
+  //   eventDescription:
+  //     "A design-focused sprint covering user research, wireframing, and prototyping techniques.",
+  //   eventDuration: "9–10 August 2026 • 9:30 AM – 5:00 PM",
+  //   eventLocation: "Mumbai, India",
+  //   eventNiche: "UI/UX Design",
+  //   eventImage: "/images/event5.png",
+  // },
 ];
 
 function page() {
@@ -67,12 +67,12 @@ function page() {
         </p>
         <FindEventButton />
         {/* Events Section */}
-        <div className="mt-10">
-          <h2 className="text-4xl font-semibold">Featured Events</h2>
+        <div className="mt-20">
+          <h2 className="text-2xl font-semibold">Featured Events</h2>
           <br />
           <ul>
             {events.map((event) => {
-              return <EventCard key={event.eventId} {...event} />;
+              return <EventCard key={event.eventId} {...event} />
             })}
           </ul>
         </div>
