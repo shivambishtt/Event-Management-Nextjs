@@ -71,6 +71,8 @@ BookingSchema.index(
   { eventId: 1, email: 1 },
   { unique: true, name: "uniq_event_email" }
 );
-const Booking = mongoose.model<Booking>("Booking", BookingSchema);
+const Booking =
+  (mongoose.models.Booking as mongoose.Model<Booking>) ||
+  mongoose.model<Booking>("Booking", BookingSchema);
 
 export default Booking;

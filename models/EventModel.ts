@@ -47,7 +47,7 @@ const EventSchema = new Schema<IEvent>(
     },
     image: {
       type: String,
-      // required: [true, "Image URL is required"],
+      required: [true, "Image URL is required"],
       trim: true,
     },
     venue: {
@@ -83,7 +83,7 @@ const EventSchema = new Schema<IEvent>(
     },
     agenda: {
       type: [String],
-      // required: [true, "Agenda is required"],
+      required: [true, "Agenda is required"],
       validate: {
         validator: (v: string[]) => v.length > 0,
         message: "At least one agenda item is required",
@@ -96,7 +96,7 @@ const EventSchema = new Schema<IEvent>(
     },
     tags: {
       type: [String],
-      // required: [true, "Tags are required"],
+      required: [true, "Tags are required"],
       validate: {
         validator: (v: string[]) => v.length > 0,
         message: "At least one tag is required",
@@ -108,27 +108,24 @@ const EventSchema = new Schema<IEvent>(
   }
 );
 // Pre-save hook for slug generation and data normalization
-EventSchema.pre("save", function (next) {
+EventSchema.pre("save", async function () {
   const event = this as IEvent;
 
   if (event.isModified("title") || event.isNew) {
     event.slug = generateSlug(event.title);
   }
+
   if (event.isModified("date")) {
-    // Normalize date to ISO format if it's not already
     event.date = normalizeDate(event.date);
   }
 
-  // Normalize time format (HH:MM)
   if (event.isModified("time")) {
     event.time = normalizeTime(event.time);
   }
-
-  next();
 });
 
 // Helper function to generate URL-friendly slug
-function generateSlug(title: string): string {
+export function generateSlug(title: string): string {
   return title
     .toLowerCase()
     .trim()
@@ -179,12 +176,8 @@ function normalizeTime(timeString: string): string {
   return `${hours.toString().padStart(2, "0")}:${minutes}`;
 }
 
-// Create unique index on slug for better performance
-EventSchema.index({ slug: 1 }, { unique: true });
-
-// Create compound index for common queries
-EventSchema.index({ date: 1, mode: 1 });
-
-const Event = mongoose.model<IEvent>("Event", EventSchema);
+const Event =
+  (mongoose.models.Event as mongoose.Model<IEvent>) ||
+  mongoose.model<IEvent>("Event", EventSchema);
 
 export default Event;
