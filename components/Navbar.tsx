@@ -4,8 +4,8 @@ import Link from "next/link";
 function Navbar() {
   return (
     <header>
-      <nav>
-          <Link href="/" className="app- flex gap-2">
+      <nav className="h-20">
+          <Link href="/" className="app- flex gap-2 items-center">
             <Image src="/icons/logo.png" alt="appLogo" width={24} height={24} />
 
             <p>Dev Events</p>

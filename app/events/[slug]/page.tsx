@@ -38,16 +38,16 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
 
   return (
     <section>
-      <div>
+      <div className="w-full max-w-3xl">
         <h1>
           {title} <br />
         </h1>
         <p className="mt-4">{description}</p>
       </div>
 
-      <div className="event-details flex items-center justify-between">
-        <div className="event-details-left">
-          <Image src={image} height={700} width={700} alt="eventImage" />
+      <div className="event-details flex justify-between">
+        <div className="event-details-left w-full max-w-3xl">
+          <Image className="mt-2" src={image} height={700} width={700} alt="eventImage" />
 
           <section className="mt-4">
             <h2 className="text-2xl font-semibold">Overview</h2>
@@ -92,7 +92,10 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
             <h2 className="text-2xl font-semibold">About the Organizer</h2>
             <p>{organizer}</p>
           </section>
+
+          <EventTags  tags={JSON.parse(tags[0])} />
         </div>
+
         <div className="event-details-right">
           <aside className="booking-form">
             <p className="font-semibold ">Book Event </p>
