@@ -5,6 +5,8 @@ import EventDetailItem from "@/components/EventDetailItems";
 import EventAgenda from "@/components/EventAgenda";
 import EventTags from "@/components/EventTags";
 import BookEvent from "@/components/BookEvent";
+import { getSimilarEvents } from "@/actions/EventAction";
+import EventCard from "@/components/EventCard";
 
 interface EventResponse {
   event: IEvent;
@@ -14,7 +16,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`
+    `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
   );
   const {
     event: {
@@ -31,7 +33,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
       organizer,
       overview,
     },
-  }: EventResponse = await request.json();
+  }: EventResponse = await request.json();  
 
   if (!description) {
     return notFound();
@@ -39,6 +41,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
 
   const bookings = 10;
 
+  const similarEvents: IEvent[] = await getSimilarEvents(slug);
   return (
     <section>
       <div className="w-full max-w-3xl">
@@ -116,6 +119,20 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
             <BookEvent />
           </div>
         </aside>
+      </div>
+      <div>
+        <h2>Similar Events</h2>
+        <div>
+          {similarEvents.length > 0 &&
+            similarEvents.map((similarEvent: IEvent, id) => {
+              return (
+                <EventCard
+                  key={similarEvent._id.toString()}
+                  {...similarEvent}
+                />
+              );
+            })}
+        </div>
       </div>
     </section>
   );
