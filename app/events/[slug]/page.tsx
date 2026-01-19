@@ -18,6 +18,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const request = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
   );
+
   const {
     event: {
       title,
@@ -33,7 +34,8 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
       organizer,
       overview,
     },
-  }: EventResponse = await request.json();  
+  }: EventResponse = await request.json();
+
 
   if (!description) {
     return notFound();

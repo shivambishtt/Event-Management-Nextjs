@@ -1,10 +1,13 @@
-import {NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/database";
 import Event from "@/models/EventModel";
 
-export async function GET(
-  { params }: { params: Promise<{ slug: string }> }
-) {
+type RouteParams = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+export async function GET(req: NextRequest, { params }: RouteParams):Promise<NextResponse> {
   try {
     await connectDB();
     const { slug } = await params;
@@ -16,27 +19,28 @@ export async function GET(
         },
         {
           status: 400,
-        }
+        },
       );
     }
     const event = await Event.findOne({
       slug,
     });
+    
     if (!event) {
       return NextResponse.json(
         { message: "Event with the slug not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
       { message: "Event found successfully", event },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
       { message: "An unknown error occured", error },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
