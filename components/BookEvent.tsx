@@ -31,7 +31,7 @@ function BookEvent() {
           <div>
             <label htmlFor="email">Email Address</label> <br />
             <input
-              className="bg-teal-700 w-full p-1.5 text-black"
+              className="bg-teal-700 w-full p-1.5 text-white"
               type="email"
               value={email}
               placeholder="Enter your email"

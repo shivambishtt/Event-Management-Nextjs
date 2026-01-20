@@ -20,16 +20,17 @@ export async function POST(req: NextRequest) {
     const date = formData.get("date") as string;
     const time = formData.get("time") as string;
     const mode = formData.get("mode") as string;
-    const agenda = formData.getAll("agenda") as string[];
-    const tags = formData.getAll("tags") as string[];
+    const agenda = JSON.parse(formData.get("agemda") as string);
+    const tags = JSON.parse(formData.get("tags") as string);
     const audience = formData.get("audience") as string;
     const organizer = formData.get("organizer") as string;
+
     const MAX_SIZE_IMAGE: number = 5 * 1024 * 1024;
 
     if (!image) {
       return NextResponse.json(
         { message: "Please upload image first" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
           (error, success) => {
             if (error) reject(error);
             resolve(success);
-          }
+          },
         )
         .end(buffer);
     });
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
       time,
       mode,
       agenda,
-      tags,
+      tags: tags,
       audience,
       organizer,
       slug: generateSlug(title),
@@ -80,13 +81,13 @@ export async function POST(req: NextRequest) {
     if (!eventCreated) {
       return NextResponse.json(
         { message: "Error occured while creating the event" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json(
       { message: "Event successfully created", event: eventCreated },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Error creating event:", error);
@@ -101,7 +102,7 @@ export async function POST(req: NextRequest) {
         message: errorMessage,
         error: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -114,7 +115,7 @@ export async function GET() {
     if (!events) {
       return NextResponse.json(
         { message: "Oops No events found." },
-        { status: 404 }
+        { status: 404 },
       );
     }
     return NextResponse.json(
@@ -122,12 +123,12 @@ export async function GET() {
         message: "Events fetched successfully",
         events,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
       { message: "Error occured while fetching the events", error },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
