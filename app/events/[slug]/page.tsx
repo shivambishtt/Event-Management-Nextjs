@@ -36,7 +36,6 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
     },
   }: EventResponse = await request.json();
 
-
   if (!description) {
     return notFound();
   }
@@ -99,7 +98,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
             </div>
           </section>
 
-          <EventAgenda agendas={JSON.parse(agenda[0])} />
+          <EventAgenda agendas={agenda} />
 
           {/* organizer */}
           <section className="mt-2">
@@ -107,7 +106,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
             <p>{organizer}</p>
           </section>
 
-          <EventTags tags={JSON.parse(tags[0])} />
+          <EventTags tags={tags} />
         </div>
 
         <aside className="booking-form">
@@ -123,14 +122,19 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
         </aside>
       </div>
       <div>
-        <h2>Similar Events</h2>
+        <h2 className="text-2xl font-semibold">Similar Events</h2>
         <div>
           {similarEvents.length > 0 &&
-            similarEvents.map((similarEvent: IEvent, id) => {
+            similarEvents.map((similarEvent: IEvent) => {
               return (
                 <EventCard
+                  title={similarEvent.title}
+                  description={similarEvent.description}
+                  image={similarEvent.image}
+                  location={similarEvent.location}
+                  slug={similarEvent.slug}
+                  time={similarEvent.time}
                   key={similarEvent._id.toString()}
-                  {...similarEvent}
                 />
               );
             })}

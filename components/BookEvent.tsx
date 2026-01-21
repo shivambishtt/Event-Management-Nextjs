@@ -40,7 +40,7 @@ function BookEvent() {
             />
           </div>
           <button
-            className="bg-[#66F1C2] text-black px-7 py-1.5 w-full rounded mt-2"
+            className="bg-[#66f1ea] text-black px-7 py-1.5 w-full rounded mt-2"
             type="submit"
           >
             Submit

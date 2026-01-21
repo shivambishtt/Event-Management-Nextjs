@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const date = formData.get("date") as string;
     const time = formData.get("time") as string;
     const mode = formData.get("mode") as string;
-    const agenda = JSON.parse(formData.get("agemda") as string);
+    const agenda = JSON.parse(formData.get("agenda") as string);
     const tags = JSON.parse(formData.get("tags") as string);
     const audience = formData.get("audience") as string;
     const organizer = formData.get("organizer") as string;
