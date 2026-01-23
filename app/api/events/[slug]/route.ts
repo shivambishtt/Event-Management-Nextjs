@@ -7,7 +7,10 @@ type RouteParams = {
     slug: string;
   }>;
 };
-export async function GET(req: NextRequest, { params }: RouteParams):Promise<NextResponse> {
+export async function GET(
+  req: NextRequest,
+  { params }: RouteParams,
+): Promise<NextResponse> {
   try {
     await connectDB();
     const { slug } = await params;
@@ -22,15 +25,20 @@ export async function GET(req: NextRequest, { params }: RouteParams):Promise<Nex
         },
       );
     }
+
     const event = await Event.findOne({
       slug,
+      isExpired: false,
     });
-    
-    if (!event) {
+
+    if (event?.isExpired) {
       return NextResponse.json(
-        { message: "Event with the slug not found" },
-        { status: 404 },
+        { message: "This event has been expired" },
+        { status: 400 },
       );
+    }
+    if (!event) {
+      return NextResponse.json({ message: "Event not found" }, { status: 404 });
     }
 
     return NextResponse.json(

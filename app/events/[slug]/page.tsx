@@ -17,7 +17,13 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
 
   const request = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
+      { cache: "no-store" }
   );
+
+  if(!request.ok){
+      return notFound();
+
+  }
 
   const {
     event: {

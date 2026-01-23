@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IEvent extends Document {
   title: string;
+  isExpired: boolean;
   slug: string;
   description: string;
   overview: string;
@@ -26,6 +27,10 @@ const EventSchema = new Schema<IEvent>(
       required: [true, "Title is required"],
       trim: true,
       maxlength: [100, "Title cannot exceed 100 characters"],
+    },
+    isExpired: {
+      type: Boolean,
+      default: false,
     },
     slug: {
       type: String,
@@ -105,7 +110,7 @@ const EventSchema = new Schema<IEvent>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 // Pre-save hook for slug generation and data normalization
 EventSchema.pre("save", async function () {

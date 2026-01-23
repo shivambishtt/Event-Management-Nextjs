@@ -111,7 +111,9 @@ export async function GET() {
   try {
     await connectDB();
 
-    const events = await Event.find().sort({ createdAt: -1 }); //ensures latest new events are shown first
+    const events = await Event.find().sort({
+      createdAt: -1,
+    });
     if (!events) {
       return NextResponse.json(
         { message: "Oops No events found." },
