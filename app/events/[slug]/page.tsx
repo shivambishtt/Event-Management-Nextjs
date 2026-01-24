@@ -17,16 +17,16 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
 
   const request = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
-      { cache: "no-store" }
+    { cache: "no-store" },
   );
 
-  if(!request.ok){
-      return notFound();
-
+  if (!request.ok) {
+    return notFound();
   }
 
   const {
     event: {
+      isExpired,
       title,
       description,
       location,
@@ -115,17 +115,25 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
           <EventTags tags={tags} />
         </div>
 
-        <aside className="booking-form">
-          <div className="space-y-3 signup-card p-4 bg-[#0c2e249e]">
-            <h2 className="font-semibold text-2xl">Book your spot </h2>
-            {bookings > 0 ? (
-              <p>Join {bookings} people who have already booked their spot</p>
-            ) : (
-              <p className="text-sm">Be the first to book your spot </p>
-            )}
-            <BookEvent />
-          </div>
-        </aside>
+        {isExpired ? (
+          <p className="text-red-400 font-medium">
+            This event has expired. Bookings are closed.
+          </p>
+        ) : (
+          <aside className="booking-form">
+            <div className="space-y-3 signup-card p-4 bg-[#0c2e249e]">
+              <h2 className="font-semibold text-2xl">Book your spot </h2>
+
+              {bookings > 0 ? (
+                <p>Join {bookings} people who have already booked their spot</p>
+              ) : (
+                <p className="text-sm">Be the first to book your spot </p>
+              )}
+
+              <BookEvent />
+            </div>
+          </aside>
+        )}
       </div>
       <div>
         <h2 className="text-2xl font-semibold">Similar Events</h2>
