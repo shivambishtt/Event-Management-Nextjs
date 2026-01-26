@@ -9,7 +9,7 @@ export interface IEvent extends Document {
   image: string;
   venue: string;
   location: string;
-  date: string;
+  date: Date;
   time: string;
   mode: string;
   audience: string;
@@ -66,8 +66,9 @@ const EventSchema = new Schema<IEvent>(
       trim: true,
     },
     date: {
-      type: String,
-      required: [true, "Date is required"],
+      type: Date,
+      required: [true, "Date us required"],
+      index: true,
     },
     time: {
       type: String,
@@ -141,12 +142,10 @@ export function generateSlug(title: string): string {
 }
 
 // Helper function to normalize date to ISO format
-function normalizeDate(dateString: string): string {
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) {
-    throw new Error("Invalid date format");
-  }
-  return date.toISOString().split("T")[0]; // Return YYYY-MM-DD format
+function normalizeDate(date: Date): Date {
+  const normalizedDate = new Date(date);
+  normalizedDate.setHours(0, 0, 0, 0); // start of day
+  return normalizedDate;
 }
 
 // Helper function to normalize time format
