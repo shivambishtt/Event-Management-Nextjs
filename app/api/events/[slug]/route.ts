@@ -40,7 +40,7 @@ export async function GET(
     if (!event) {
       return NextResponse.json({ message: "Event not found" }, { status: 404 });
     }
-
+    
     return NextResponse.json(
       { message: "Event found successfully", event },
       { status: 200 },

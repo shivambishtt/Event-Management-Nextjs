@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const venue = formData.get("venue") as string;
     const image = formData.get("image") as File;
     const location = formData.get("location") as string;
-    const date = formData.get("date") as string;
+    const date = formData.get("date");
     const time = formData.get("time") as string;
     const mode = formData.get("mode") as string;
     const agenda = JSON.parse(formData.get("agenda") as string);
@@ -26,6 +26,17 @@ export async function POST(req: NextRequest) {
     const organizer = formData.get("organizer") as string;
 
     const MAX_SIZE_IMAGE: number = 5 * 1024 * 1024;
+
+    const currentDate = new Date();
+
+    if (currentDate > date) {
+      if (!event.isExpired) {
+        await Event.updateOne(
+          { _id: event._id },
+          { $set: { isExpired: true } },
+        );
+      }
+    }
 
     if (!image) {
       return NextResponse.json(
