@@ -2,7 +2,6 @@
 
 import connectDB from "@/lib/database";
 import Event from "@/models/EventModel";
-import { NextResponse } from "next/server";
 
 export async function getSimilarEvents(slug: string) {
   try {
@@ -26,7 +25,11 @@ export async function getSimilarEvents(slug: string) {
 
 export async function setExpiry(slug: string) {
   const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
 
   const event = await Event.findOne({ slug });
 
+  if (event?.date && currentDate > event.date && !event.isExpired) {
+    await Event.updateOne({ _id: event._id }, { $set: { isExpired: true } });
+  }
 }

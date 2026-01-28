@@ -23,7 +23,6 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   if (!request.ok) {
     return notFound();
   }
-
   const {
     event: {
       isExpired,
@@ -41,10 +40,6 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
       overview,
     },
   }: EventResponse = await request.json();
-
-  if (!description) {
-    return notFound();
-  }
 
   const bookings = 10;
 

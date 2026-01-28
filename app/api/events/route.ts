@@ -27,17 +27,6 @@ export async function POST(req: NextRequest) {
 
     const MAX_SIZE_IMAGE: number = 5 * 1024 * 1024;
 
-    const currentDate = new Date();
-
-    if (currentDate > date) {
-      if (!event.isExpired) {
-        await Event.updateOne(
-          { _id: event._id },
-          { $set: { isExpired: true } },
-        );
-      }
-    }
-
     if (!image) {
       return NextResponse.json(
         { message: "Please upload image first" },
