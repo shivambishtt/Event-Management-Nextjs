@@ -14,7 +14,6 @@ export async function GET(
   try {
     await connectDB();
     const { slug } = await params;
-    const currentDate = new Date();
 
     if (!slug || typeof slug !== "string" || slug.trim() === "") {
       return NextResponse.json(
@@ -29,22 +28,17 @@ export async function GET(
 
     const event = await Event.findOne({
       slug,
-      isExpired: false,
     });
 
     if (event?.isExpired) {
       return NextResponse.json(
-        { message: "This event has been expired" },
-        { status: 400 },
+        { message: "This event has been expired", event },
+        { status: 200 },
       );
     }
     if (!event) {
       return NextResponse.json({ message: "Event not found" }, { status: 404 });
     }
-
-    // if (currentDate > date) {
-    //   await Event.updateOne({ _id: event._id }, { $set: { isExpired: true } });
-    // }
 
     return NextResponse.json(
       { message: "Event found successfully", event },

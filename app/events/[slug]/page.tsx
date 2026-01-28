@@ -5,8 +5,9 @@ import EventDetailItem from "@/components/EventDetailItems";
 import EventAgenda from "@/components/EventAgenda";
 import EventTags from "@/components/EventTags";
 import BookEvent from "@/components/BookEvent";
-import { getSimilarEvents } from "@/actions/EventAction";
+import { getSimilarEvents, setExpiry } from "@/actions/EventAction";
 import EventCard from "@/components/EventCard";
+import Link from "next/link";
 
 interface EventResponse {
   event: IEvent;
@@ -14,6 +15,8 @@ interface EventResponse {
 
 async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  const expiredEvent = await setExpiry(slug);
 
   const request = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
@@ -111,9 +114,19 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
         </div>
 
         {isExpired ? (
-          <p className="text-red-400 font-medium">
-            This event has expired. Bookings are closed.
-          </p>
+          <div className="mt-12">
+            <p>
+              <span className="text-red-400 font-medium">
+                This event has expired. Bookings are closed. <br />
+              </span>
+              Check out other events below. <br />
+              <button className="bg-gray-600 rounded p-1.5">
+                <Link className="" href="/">
+                  More Events
+                </Link>
+              </button>
+            </p>
+          </div>
         ) : (
           <aside className="booking-form">
             <div className="space-y-3 signup-card p-4 bg-[#0c2e249e]">
