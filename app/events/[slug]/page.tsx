@@ -28,6 +28,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   }
   const {
     event: {
+      _id,
       isExpired,
       title,
       description,
@@ -138,7 +139,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
                 <p className="text-sm">Be the first to book your spot </p>
               )}
 
-              <BookEvent />
+              <BookEvent eventId={_id.toString()} />
             </div>
           </aside>
         )}

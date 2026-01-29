@@ -1,5 +1,4 @@
 "use server";
-
 import connectDB from "@/lib/database";
 import Event from "@/models/EventModel";
 
