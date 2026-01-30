@@ -13,6 +13,7 @@ interface BookEventProps {
 
 function BookEvent({ eventId }: BookEventProps) {
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -21,7 +22,8 @@ function BookEvent({ eventId }: BookEventProps) {
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const request = await fetch("/api/send", {
+    setMessage(null);
+    const booking = await fetch("/api/bookings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,10 +34,30 @@ function BookEvent({ eventId }: BookEventProps) {
       }),
     });
 
-    if (!request.ok) {
-      return notFound();
+    if (booking.status === 409) {
+      setSubmitted(true);
+      setMessage("You have already booked this event.");
+      return;
     }
+
+    if (!booking.ok) {
+      setMessage("Booking failed. Please try again later");
+      return;
+    }
+
+    await fetch("/api/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        eventId,
+        email: data.email,
+      }),
+    });
+
     setSubmitted(true);
+    setMessage("Booking successful! Confirmation email sent.");
   };
 
   return (
@@ -52,7 +74,9 @@ function BookEvent({ eventId }: BookEventProps) {
               placeholder="Enter your email"
               {...register("email", { required: "Email is required" })}
             />
-            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
           </div>
           <button
             className="bg-[#66f1ea] text-black px-7 py-1.5 w-full rounded mt-2"

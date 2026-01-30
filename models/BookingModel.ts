@@ -20,10 +20,10 @@ const BookingSchema = new Schema<Booking>(
       required: true,
       trim: true,
       lowercase: true,
-      validateEmail: {
-        validatorFunction: (email: string) => {
+      validate: {
+        validator: function (email: string) {
           const validRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          return validRegex.test(email); // checks if string matches the regex
+          return validRegex.test(email);
         },
         message: "Please provide a valid email address",
       },
@@ -31,7 +31,7 @@ const BookingSchema = new Schema<Booking>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 //hooks
@@ -43,14 +43,14 @@ BookingSchema.pre("save", async function (next) {
       const eventExists = await Event.findById(booking.eventId).select("_id");
       if (!eventExists) {
         const error = new Error(
-          `Event with  ID${booking.eventId} does not exists`
+          `Event with  ID${booking.eventId} does not exists`,
         );
         error.name = "validationError";
         return next(error);
       }
     } catch (error: unknown) {
       const validationError = new Error(
-        "Invalid events ID format or database error"
+        "Invalid events ID format or database error",
       );
       validationError.name = "ValidationError";
       return next(validationError);
@@ -69,7 +69,7 @@ BookingSchema.index({ email: 1 });
 // Enforce one booking per events per email
 BookingSchema.index(
   { eventId: 1, email: 1 },
-  { unique: true, name: "uniq_event_email" }
+  { unique: true, name: "uniq_event_email" },
 );
 const Booking =
   (mongoose.models.Booking as mongoose.Model<Booking>) ||

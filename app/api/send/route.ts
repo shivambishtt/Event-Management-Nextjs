@@ -1,5 +1,5 @@
 import connectDB from "@/lib/database";
-import BookingEmailValidation from "@/email/email";
+import BookingEmailValidation from "@/email/BookingEmailValidation";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import Event from "@/models/EventModel";
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { data } = await resend.emails.send({
-      from: "Eve <onboarding@resend.dev>",
+      from: "Eva <onboarding@aieventplanner.ai>",
       to: [email],
       subject: "Booking confirmation for event",
       react: BookingEmailValidation({
