@@ -3,8 +3,6 @@ import EventCard from "@/components/EventCard";
 import { IEvent } from "@/models/EventModel";
 
 async function page() {
-  // "use cache";
-  // cacheLife("hours");
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/events`);
 
   const { events } = await response.json();

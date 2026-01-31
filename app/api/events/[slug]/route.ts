@@ -30,7 +30,7 @@ export async function GET(
       slug,
     });
 
-    if (event?.isExpired) {
+    if (event?.isExpired === true) {
       return NextResponse.json(
         { message: "This event has been expired", event },
         { status: 200 },

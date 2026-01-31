@@ -23,7 +23,7 @@ function BookEvent({ eventId }: BookEventProps) {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setMessage(null);
-    const booking = await fetch("/api/bookings", {
+    const booking = await fetch(`/api/bookings`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,6 +34,7 @@ function BookEvent({ eventId }: BookEventProps) {
       }),
     });
 
+    console.log(booking, "booking");
     if (booking.status === 409) {
       setSubmitted(true);
       setMessage("You have already booked this event.");
@@ -55,7 +56,6 @@ function BookEvent({ eventId }: BookEventProps) {
         email: data.email,
       }),
     });
-
     setSubmitted(true);
     setMessage("Booking successful! Confirmation email sent.");
   };

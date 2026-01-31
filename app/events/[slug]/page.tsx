@@ -114,7 +114,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
           <EventTags tags={tags} />
         </div>
 
-        {isExpired ? (
+        {isExpired === true ? (
           <div className="mt-12">
             <p>
               <span className="text-red-400 font-medium">

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Event not found" }, { status: 404 });
     }
 
-    if (event.isExpired === true) {
+    if (event.isExpired) {
       return NextResponse.json(
         {
           message: "Booking closed as event is expired",
