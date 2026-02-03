@@ -94,7 +94,7 @@ export default function CreateEvent() {
             <Input placeholder="Enter event title" {...field} />
           )}
         />
-
+        {errors.title && <p className="text-red-500">{errors.title.message}</p>}
         <label htmlFor="description">Description</label>
         <Controller
           name="description"
@@ -104,6 +104,9 @@ export default function CreateEvent() {
             <Input placeholder="Enter event description here" {...field} />
           )}
         />
+        {errors.description && (
+          <p className="text-red-500">{errors.description.message}</p>
+        )}
 
         <label htmlFor="overview">Overview</label>
         <Controller
@@ -118,9 +121,11 @@ export default function CreateEvent() {
             />
           )}
         />
+        {errors.overview && (
+          <p className="text-red-500">{errors.overview.message}</p>
+        )}
 
         <label htmlFor="image">Image</label>
-
         <Controller
           name="image"
           control={control}
@@ -134,6 +139,7 @@ export default function CreateEvent() {
             />
           )}
         />
+        {errors.image && <p className="text-red-500">{errors.image.message}</p>}
 
         <label htmlFor="date">Date</label>
         <Controller
@@ -163,6 +169,7 @@ export default function CreateEvent() {
             </Popover>
           )}
         />
+        {errors.date && <p className="text-red-500">{errors.date.message}</p>}
 
         <label htmlFor="time">Time</label>
         <Controller
@@ -173,6 +180,7 @@ export default function CreateEvent() {
             <Input type="time" placeholder="Time of event" {...field} />
           )}
         />
+        {errors.time && <p className="text-red-500">{errors.time.message}</p>}
 
         <label htmlFor="location">Location</label>
         <Controller
@@ -183,6 +191,9 @@ export default function CreateEvent() {
             <Input placeholder="Location of event" {...field} />
           )}
         />
+        {errors.location && (
+          <p className="text-red-500">{errors.location.message}</p>
+        )}
 
         <label htmlFor="venue">Venue</label>
         <Controller
@@ -193,6 +204,7 @@ export default function CreateEvent() {
             <Input placeholder="Venue of event" {...field} />
           )}
         />
+        {errors.venue && <p className="text-red-500">{errors.venue.message}</p>}
 
         <label htmlFor="mode">Mode</label>
         <Controller
@@ -214,6 +226,7 @@ export default function CreateEvent() {
             </Select>
           )}
         />
+        {errors.mode && <p className="text-red-500">{errors.mode.message}</p>}
 
         <label htmlFor="organizer">Organizer</label>
         <Controller
@@ -224,6 +237,9 @@ export default function CreateEvent() {
             <Input placeholder="Organizer's name" {...field} />
           )}
         />
+        {errors.organizer && (
+          <p className="text-red-500">{errors.organizer.message}</p>
+        )}
 
         <label htmlFor="tags">Tags</label>
         <Controller

@@ -45,6 +45,9 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
     },
   }: EventResponse = await request.json();
 
+  const dateConversion = new Date(date);
+  const normalizeDate = dateConversion.toDateString();
+
   const bookings = 10;
 
   const similarEvents: IEvent[] = await getSimilarEvents(slug);
@@ -78,7 +81,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
               <EventDetailItem
                 icon="/icons/calendar.svg"
                 alt="calendar"
-                label={date}
+                label={normalizeDate}
               />
               <EventDetailItem
                 icon="/icons/clock.svg"
