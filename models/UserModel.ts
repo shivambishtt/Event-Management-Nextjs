@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { email, z } from "zod";
+
+import bcrypt from "bcrypt";
 
 interface User extends Document {
   name: string;
@@ -9,7 +10,7 @@ interface User extends Document {
   updatedAt: Date;
 }
 
-const UserSchema = new Schema<User>(
+const userSchema = new Schema<User>(
   {
     name: {
       type: String,
@@ -29,7 +30,13 @@ const UserSchema = new Schema<User>(
   { timestamps: true },
 );
 
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  const hashedPassword = await bcrypt.hash(this.password, 10);
+  this.password = hashedPassword;
+});
+
 const User =
-  mongoose.models.User<User> ?? mongoose.model<User>("User", UserSchema);
+  mongoose.models.User<User> ?? mongoose.model<User>("User", userSchema);
 
 export default User;
