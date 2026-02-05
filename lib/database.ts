@@ -1,24 +1,29 @@
-import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
-type ConnectionObject = {
-  isConnected?: number;
-};
+const uri = process.env.MONGODB_URL!;
+const options = {};
 
-const connection: ConnectionObject = {};
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
 
-async function connectDB(): Promise<void> {
-  if (connection.isConnected) {
-    console.log("Already connected to the database");
-    return;
-  }
-  try {
-    const db = await mongoose.connect(process.env.MONGODB_URL || "");
-    connection.isConnected = db.connections[0].readyState;
-    console.log("Mongo DB connected sucessfully");
-  } catch (error) {
-    console.log("Mongo DB connection failed", error);
-    process.exit(1);
-  }
+if (!process.env.MONGODB_URL) {
+  throw new Error("Please add MONGODB_URL to env");
 }
 
-export default connectDB;
+if (process.env.NODE_ENV === "development") {
+  const globalWithMongo = global as typeof globalThis & {
+    _mongoClientPromise?: Promise<MongoClient>;
+  };
+
+  if (!globalWithMongo._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    globalWithMongo._mongoClientPromise = client.connect();
+  }
+
+  clientPromise = globalWithMongo._mongoClientPromise;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
+}
+
+export default clientPromise;
