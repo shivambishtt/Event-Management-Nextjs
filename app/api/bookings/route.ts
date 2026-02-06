@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import Booking from "@/models/BookingModel";
-import connectDB from "@/lib/database";
+import connectDB from "@/lib/connectDB";
 import Event from "@/models/EventModel";
 
 export async function POST(req: NextRequest) {

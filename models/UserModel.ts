@@ -3,9 +3,11 @@ import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
 interface User extends Document {
-  name: string;
+  name?: string;
   email: string;
-  password: string;
+  password?: string;
+  provider: "credentials" | "google" | "github";
+  authUserId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,7 +16,6 @@ const userSchema = new Schema<User>(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
     },
     email: {
       type: String,
@@ -24,8 +25,16 @@ const userSchema = new Schema<User>(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
       select: false,
+    },
+    provider: {
+      type: String,
+      enum: ["credentials", "google", "github"],
+      required: true,
+    },
+    authUserId: {
+      type: String,
+      index: true,
     },
   },
   { timestamps: true },
@@ -33,8 +42,10 @@ const userSchema = new Schema<User>(
 
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
-  const hashedPassword = await bcrypt.hash(this.password, 10);
-  this.password = hashedPassword;
+  if (this.password) {
+    const hashedPassword = await bcrypt.hash(this.password, 10);
+    this.password = hashedPassword;
+  }
 });
 
 const User =

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/database";
+import connectDB from "@/lib/connectDB";
 import Event from "@/models/EventModel";
 
 type RouteParams = {

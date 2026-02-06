@@ -1,7 +1,7 @@
 import User from "@/models/UserModel";
 import { NextRequest, NextResponse } from "next/server";
 import { SignupValidation } from "@/validations/AuthValidation";
-import connectDB from "@/lib/database";
+import connectDB from "@/lib/connectDB";
 import bcrypt from "bcrypt";
 
 export async function POST(req: NextRequest) {
@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       name,
       email,
       password: hashedPassword,
+      provider: "credentials",
     });
 
     if (!user) {
@@ -40,8 +41,6 @@ export async function POST(req: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.log(error, "unknown error");
-
     return NextResponse.json(
       { message: "An unknown error occured ", error },
       { status: 500 },

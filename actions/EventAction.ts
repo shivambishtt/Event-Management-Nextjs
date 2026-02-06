@@ -1,5 +1,5 @@
 "use server";
-import connectDB from "@/lib/database";
+import connectDB from "@/lib/connectDB";
 import Event from "@/models/EventModel";
 
 export async function getSimilarEvents(slug: string) {

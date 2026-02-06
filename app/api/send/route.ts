@@ -1,4 +1,4 @@
-import connectDB from "@/lib/database";
+import connectDB from "@/lib/connectDB";
 import BookingEmailValidation from "@/email/BookingEmailValidation";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";

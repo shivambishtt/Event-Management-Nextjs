@@ -2,7 +2,8 @@ import NextAuth from "next-auth";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-import clientPromise from "@/lib/database";
+import clientPromise from "@/lib/connectDB";
+import User from "@/models/UserModel";
 
 export const handler = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
@@ -36,6 +37,25 @@ export const handler = NextAuth({
         session.user.role = token.role as string;
       }
       return session;
+    },
+
+    async signIn({ user, account }) {
+      await connectDB();
+      const existingUser = await User.findOne({ email: user.email });
+
+      if (!existingUser) {
+        await User.create({
+          email: user.email!,
+          name: user.name,
+          provider: account?.provider,
+          authUserId: user.id,
+        });
+      } else if (!existingUser.authUserId) {
+        existingUser.authUserId = user.id;
+        await existingUser.save();
+      }
+
+      return true;
     },
   },
 
