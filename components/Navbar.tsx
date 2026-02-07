@@ -4,6 +4,7 @@ import { ROUTES } from "@/lib/route";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Navbar() {
   const pathname = usePathname();
@@ -16,7 +17,6 @@ function Navbar() {
       <nav className="h-20 mt-4 w-2/3 border border-transparent  rounded-4xl ">
         <Link href="/" className="app- flex gap-2 items-center">
           <Image src="/icons/logo.png" alt="appLogo" width={24} height={24} />
-
           <p>Dev Events</p>
         </Link>
 
@@ -50,6 +50,10 @@ function Navbar() {
             Create Events
           </Link>
         </ul>
+        <Avatar className="items-center justify-center">
+          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
       </nav>
     </header>
   );

@@ -37,7 +37,14 @@ export async function POST(req: NextRequest) {
       );
     }
     return NextResponse.json(
-      { message: "User created sucessfully", user },
+      {
+        message: "User created sucessfully",
+        user: {
+          name,
+          email,
+          provider: "credentials",
+        },
+      },
       { status: 200 },
     );
   } catch (error) {
