@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import clientPromise from "@/lib/connectDB";
 import User from "@/models/UserModel";
+import connectDB from "@/lib/connectDB";
 
 export const handler = NextAuth({
   adapter: MongoDBAdapter(clientPromise),

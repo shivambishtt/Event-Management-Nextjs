@@ -1,20 +1,54 @@
+"use client";
+
+import { ROUTES } from "@/lib/route";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
+  const pathname = usePathname();
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
+
   return (
     <header>
-      <nav className="h-20">
-          <Link href="/" className="app- flex gap-2 items-center">
-            <Image src="/icons/logo.png" alt="appLogo" width={24} height={24} />
+      <nav className="h-20 mt-4 w-2/3 border border-transparent  rounded-4xl ">
+        <Link href="/" className="app- flex gap-2 items-center">
+          <Image src="/icons/logo.png" alt="appLogo" width={24} height={24} />
 
-            <p>Dev Events</p>
+          <p>Dev Events</p>
+        </Link>
+
+        <ul>
+          <Link
+            className={
+              isActive(ROUTES.home) ? "text-zinc-400 underline " : "text-white"
+            }
+            href="/"
+          >
+            Home
           </Link>
-
-        <ul >
-          <Link href="/home">Home</Link>
-          <Link href="/events">Events</Link>
-          <Link href="/create-events">Create Events</Link>
+          <Link
+            className={
+              isActive(ROUTES.events)
+                ? "text-zinc-400 underline "
+                : "text-white"
+            }
+            href="/events"
+          >
+            Events
+          </Link>
+          <Link
+            className={
+              isActive(ROUTES.createEvent)
+                ? "text-zinc-400 underline "
+                : "text-white"
+            }
+            href="/create-events"
+          >
+            Create Events
+          </Link>
         </ul>
       </nav>
     </header>
