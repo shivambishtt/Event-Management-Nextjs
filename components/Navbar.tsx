@@ -4,13 +4,24 @@ import { ROUTES } from "@/lib/route";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Navbar() {
+  const session = useSession();
   const pathname = usePathname();
   const isActive = (path: string) => {
     return pathname === path;
   };
+
+  const userName = session.data?.user.name;
+  const initials = userName
+    ?.trim()
+    .split(" ")
+    .map((char) => {
+      return char.charAt(0).toUpperCase();
+    })
+    .join("");
 
   return (
     <header>
@@ -50,9 +61,11 @@ function Navbar() {
             Create Events
           </Link>
         </ul>
-        <Avatar className="items-center justify-center">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
+        <Avatar className="items-center justify-center mt-1.5">
+          <AvatarImage src="https://github.com/shadcn" />
+          <AvatarFallback className="bg-red-500 text-white text-center">
+            {initials}
+          </AvatarFallback>
         </Avatar>
       </nav>
     </header>

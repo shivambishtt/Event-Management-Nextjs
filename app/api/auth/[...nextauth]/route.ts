@@ -27,7 +27,13 @@ export const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        await connectDB();
+        const dbUser = await User.findOne({ email: user.email });
+
+        if (dbUser) {
+          token.id = dbUser._id.toString();
+          token.role = dbUser.role || "user";
+        }
       }
       return token;
     },

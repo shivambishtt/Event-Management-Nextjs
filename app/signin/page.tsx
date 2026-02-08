@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@mui/icons-material/Google";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -25,7 +26,7 @@ function SignIn() {
     formState: { errors },
   } = useForm<SigninInputs>();
 
-  const onsubmit = async (data: SigninInputs) => {
+  const onsubmit: SubmitHandler<SigninInputs> = async (data) => {
     const request = await fetch("/api/signin", {
       method: "POST",
       headers: {
