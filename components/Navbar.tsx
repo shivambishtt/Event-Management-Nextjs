@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "./ui/button";
 
 function Navbar() {
   const session = useSession();
@@ -61,12 +62,31 @@ function Navbar() {
             Create Events
           </Link>
         </ul>
-        <Avatar className="items-center justify-center mt-1.5">
-          <AvatarImage src="https://github.com/shadcn" />
-          <AvatarFallback className="bg-red-500 text-white text-center">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+
+        {session.data?.user ? (
+          <Avatar className="items-center justify-center mt-1.5">
+            <AvatarImage src="https://github.com/shadcn" />
+            <AvatarFallback className="bg-red-500 text-white text-center">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        ) : (
+          <>
+            {pathname === "/signin" ? (
+              <Link href="/signin">
+                <Button className="bg-emerald-700 hover:cursor-pointer">
+                  Signup
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/signin">
+                <Button className="bg-emerald-700 hover:cursor-pointer ">
+                  Signin
+                </Button>
+              </Link>
+            )}
+          </>
+        )}
       </nav>
     </header>
   );
