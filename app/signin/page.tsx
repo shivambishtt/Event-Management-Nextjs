@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 interface SigninInputs {
   email: string;
@@ -27,6 +29,8 @@ function SignIn() {
   } = useForm<SigninInputs>();
 
   const onsubmit: SubmitHandler<SigninInputs> = async (data) => {
+    console.log(data, "data");
+
     const request = await fetch("/api/signin", {
       method: "POST",
       headers: {
@@ -37,6 +41,9 @@ function SignIn() {
         password: data.password,
       }),
     });
+    if (request.ok) {
+      redirect("/");
+    }
   };
 
   return (
@@ -94,12 +101,16 @@ function SignIn() {
             </Button>
             <span className="flex items-center justify-center gap-2 mt-2">
               <Button
+                type="button"
+                onClick={() => signIn("google", { callbackUrl: "/" })}
                 variant="outline"
                 className="cursor-pointer text-white w-2/4"
               >
                 <GoogleIcon fontSize="small" />
               </Button>
               <Button
+                type="button"
+                onClick={() => signIn("github", { callbackUrl: "/" })}
                 variant="outline"
                 className="cursor-pointer text-white w-2/4"
               >

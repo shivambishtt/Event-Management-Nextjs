@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-import clientPromise from "@/lib/connectDB";
+import clientPromise from "@/lib/database";
 import User from "@/models/UserModel";
 import connectDB from "@/lib/connectDB";
 

@@ -4,7 +4,7 @@ import { ROUTES } from "@/lib/route";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
 
@@ -14,6 +14,8 @@ function Navbar() {
   const isActive = (path: string) => {
     return pathname === path;
   };
+
+  console.log(session?.data?.user);
 
   const userName = session.data?.user.name;
   const initials = userName
@@ -73,7 +75,7 @@ function Navbar() {
         ) : (
           <>
             {pathname === "/signin" ? (
-              <Link href="/signin">
+              <Link href="/signup">
                 <Button className="bg-emerald-700 hover:cursor-pointer">
                   Signup
                 </Button>

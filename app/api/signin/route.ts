@@ -1,42 +1,30 @@
-import User from "@/models/UserModel";
-import { NextRequest, NextResponse } from "next/server";
-import { LoginValidation } from "@/validations/AuthValidation";
 import connectDB from "@/lib/connectDB";
+import User from "@/models/UserModel";
+import { LoginValidation } from "@/validations/AuthValidation";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    connectDB();
+    await connectDB();
     const body = await req.json();
     const validatedData = LoginValidation.parse(body);
 
     const { email, password } = validatedData;
 
-    if (!email || !password) {
-      return NextResponse.json(
-        { message: "Please enter email and password" },
-        { status: 400 },
-      );
-    }
-
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return NextResponse.json(
-        {
-          message:
-            "User with this email is not registered please register first",
-        },
+        { message: "User not registered" },
         { status: 400 },
       );
     }
 
-    const isPasswordSame = await bcrypt.compare(password, user.password);
+    const isPasswordSame = bcrypt.compare(password, user.password);
     if (!isPasswordSame) {
       return NextResponse.json(
-        {
-          message: "Invalid email or password. Try again",
-        },
+        { message: "Invalid email or password" },
         { status: 400 },
       );
     }
@@ -57,14 +45,12 @@ export async function POST(req: NextRequest) {
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
-    });
+    })
     return response;
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Signin error:", error);
     return NextResponse.json(
-      {
-        message: "An unknown error occured",
-        error,
-      },
+      { message: error.message || "Internal Server Error" },
       { status: 500 },
     );
   }

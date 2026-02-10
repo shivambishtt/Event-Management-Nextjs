@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 interface SignupInputs {
   name: string;
@@ -39,8 +41,11 @@ function Signup() {
         email: data.email,
         password: data.password,
       }),
-  });
-    
+    });
+
+    if (request.ok) {
+      redirect("/signin");
+    }
     await fetch("/api/onboarding", {
       method: "POST",
       headers: {
@@ -112,13 +117,14 @@ function Signup() {
             </Button>
             <span className="flex items-center justify-center gap-2 mt-2">
               <Button
+                onClick={() => signIn("google", { callbackUrl: "/" })}
                 variant="outline"
                 className="cursor-pointer text-white w-2/4"
               >
                 <GoogleIcon fontSize="small" />
               </Button>
               <Button
-                onClick={() => console.log("clicked")}
+                onClick={() => signIn("github", { callbackUrl: "/" })}
                 variant="outline"
                 className="cursor-pointer text-white w-2/4"
               >
