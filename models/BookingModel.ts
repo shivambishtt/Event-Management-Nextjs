@@ -35,28 +35,21 @@ const BookingSchema = new Schema<Booking>(
 );
 
 //hooks
-BookingSchema.pre("save", async function (next) {
+BookingSchema.pre("save", async function () {
   const booking = this as Booking;
 
   if (booking.isModified("eventId") || booking.isNew) {
     try {
       const eventExists = await Event.findById(booking.eventId).select("_id");
       if (!eventExists) {
-        const error = new Error(
-          `Event with  ID${booking.eventId} does not exists`,
+        throw new Error(
+          `Event with ID ${booking.eventId} does not exist`
         );
-        error.name = "validationError";
-        return next(error);
       }
-    } catch (error: unknown) {
-      const validationError = new Error(
-        "Invalid events ID format or database error",
-      );
-      validationError.name = "ValidationError";
-      return next(validationError);
+    } catch (error) {
+      throw new Error("Invalid event ID format or database error");
     }
   }
-  next();
 });
 BookingSchema.index({ eventId: 1 });
 

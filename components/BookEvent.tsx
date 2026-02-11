@@ -32,7 +32,6 @@ function BookEvent({ eventId }: BookEventProps) {
         email: data.email,
       }),
     });
-
     if (booking.status === 409) {
       setSubmitted(true);
       setMessage("You have already booked this event.");

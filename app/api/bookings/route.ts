@@ -48,14 +48,6 @@ export async function POST(req: NextRequest) {
       { status: 201 },
     );
   } catch (error: any) {
-    if (error.code === 11000) {
-      return NextResponse.json(
-        {
-          message: "You have already booked this event",
-        },
-        { status: 409 },
-      );
-    }
     return NextResponse.json(
       {
         message: "Error occured while booking the event",

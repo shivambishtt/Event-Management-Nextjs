@@ -7,6 +7,18 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function Navbar() {
   const session = useSession();
@@ -23,6 +35,10 @@ function Navbar() {
       return char.charAt(0).toUpperCase();
     })
     .join("");
+
+  const handleSignout = async () => {
+    await signOut();
+  };
 
   return (
     <header>
@@ -64,12 +80,48 @@ function Navbar() {
         </ul>
 
         {session?.data?.user ? (
-          <Avatar className="items-center justify-center mt-1.5">
-            <AvatarImage src="https://github.com/shadcn" />
-            <AvatarFallback className="bg-red-500 text-white text-center">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="items-center justify-center mt-1.5">
+                <AvatarImage src="https://github.com/shadcn" />
+                <AvatarFallback className="bg-red-500 text-white text-center">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-40" align="start">
+              <DropdownMenuGroup>
+                <DropdownMenuGroup className="text-center items-center">
+                  <div>
+                    <p className="font-medium">{session.data.user.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {session.data.user.email}
+                    </p>
+                  </div>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>Create Event</DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem>Hackathon</DropdownMenuItem>
+                      <DropdownMenuItem>Workshop</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>More...</DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuItem>My Events</DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={handleSignout}>
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
           <>
             {pathname === "/signin" ? (
