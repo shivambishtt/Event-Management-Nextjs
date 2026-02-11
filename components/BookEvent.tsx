@@ -33,7 +33,6 @@ function BookEvent({ eventId }: BookEventProps) {
       }),
     });
 
-    console.log(booking, "booking");
     if (booking.status === 409) {
       setSubmitted(true);
       setMessage("You have already booked this event.");

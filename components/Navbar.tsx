@@ -15,8 +15,6 @@ function Navbar() {
     return pathname === path;
   };
 
-  console.log(session?.data?.user);
-
   const userName = session.data?.user.name;
   const initials = userName
     ?.trim()
@@ -65,7 +63,7 @@ function Navbar() {
           </Link>
         </ul>
 
-        {session.data?.user ? (
+        {session?.data?.user ? (
           <Avatar className="items-center justify-center mt-1.5">
             <AvatarImage src="https://github.com/shadcn" />
             <AvatarFallback className="bg-red-500 text-white text-center">

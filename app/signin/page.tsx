@@ -29,21 +29,11 @@ function SignIn() {
   } = useForm<SigninInputs>();
 
   const onsubmit: SubmitHandler<SigninInputs> = async (data) => {
-    console.log(data, "data");
-
-    const request = await fetch("/api/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-      }),
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      callbackUrl: "/",
     });
-    if (request.ok) {
-      redirect("/");
-    }
   };
 
   return (
