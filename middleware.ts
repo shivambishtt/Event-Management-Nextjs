@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
 
-export async function middleware(req: NextRequest) {
+async function proxy(req: NextRequest) {
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
   const { pathname } = req.nextUrl;
+
+  if (token && pathname.startsWith("/signin")) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
   if (pathname.startsWith("/create-events") || pathname.startsWith("/events")) {
     if (!token) {
@@ -19,5 +23,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/create-events", "/events/:path*"],
+  matcher: ["/signin", "/create-events", "/events/:path*"],
 };
+
+export default proxy;

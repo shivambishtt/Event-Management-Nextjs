@@ -44,7 +44,7 @@ function Signup() {
     });
 
     if (request.ok) {
-      redirect("/signin");
+      redirect("/onboarding");
     }
     await fetch("/api/onboarding", {
       method: "POST",
