@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type FormValues = {
   email: string;
@@ -32,6 +33,8 @@ function BookEvent({ eventId }: BookEventProps) {
         email: data.email,
       }),
     });
+    const result = await booking.json();
+
     if (booking.status === 409) {
       setSubmitted(true);
       setMessage("You have already booked this event.");
@@ -40,8 +43,11 @@ function BookEvent({ eventId }: BookEventProps) {
 
     if (!booking.ok) {
       setMessage("Booking failed. Please try again later");
+      toast.error(result.message);
       return;
     }
+
+    toast.success(result.message);
 
     await fetch("/api/send", {
       method: "POST",

@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 interface FormValues {
   title: string;
@@ -71,11 +72,13 @@ export default function CreateEvent() {
       formData.append("date", data.date.toISOString());
     }
 
-    await fetch("/api/events", {
+    const request = await fetch("/api/events", {
       method: "POST",
       body: formData,
     });
+    const result = await request.json();
     setIsSubmitting(false);
+    toast.success(result.message);
     reset();
     redirect("/");
   };
