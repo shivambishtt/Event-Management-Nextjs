@@ -8,6 +8,7 @@ import BookEvent from "@/components/BookEvent";
 import { getSimilarEvents, setExpiry } from "@/actions/EventAction";
 import EventCard from "@/components/EventCard";
 import Link from "next/link";
+import SaveEventToggle from "@/components/SaveEventToggle";
 
 interface EventResponse {
   event: IEvent;
@@ -53,11 +54,17 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const similarEvents: IEvent[] = await getSimilarEvents(slug);
   return (
     <section>
-      <div className="w-full max-w-3xl">
-        <h1>
-          {title} <br />
-        </h1>
-        <p className="mt-4">{description}</p>
+      <div className="flex items-center">
+        <div className="max-w-3xl">
+          <h1>
+            {title} <br />
+          </h1>
+          <p className="mt-4">{description}</p>
+        </div>
+
+        <span className="flex items-center justify-center mx-auto">
+          <SaveEventToggle slug={slug} isEventSaved={false} />
+        </span>
       </div>
 
       <div className="event-details flex justify-between">
@@ -141,7 +148,6 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
               ) : (
                 <p className="text-sm">Be the first to book your spot </p>
               )}
-
               <BookEvent eventId={_id.toString()} />
             </div>
           </aside>

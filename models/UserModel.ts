@@ -8,6 +8,7 @@ interface User extends Document {
   password?: string;
   provider: "credentials" | "google" | "github";
   authUserId?: string;
+  savedEvents: Event[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +36,12 @@ const userSchema = new Schema<User>(
       type: String,
       index: true,
     },
+    savedEvents: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Event",
+      },
+    ],
   },
   { timestamps: true },
 );
