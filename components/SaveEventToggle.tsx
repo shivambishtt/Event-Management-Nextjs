@@ -16,10 +16,10 @@ function SaveEventToggle({ slug, isEventSaved }: paramValues) {
   const handleSaveEvent = async () => {
     setIsSaved((prev) => !prev);
     try {
-      const request = fetch(`/api/events/${slug}/save`, {
+      const request = await fetch(`/api/events/${slug}/save`, {
         method: "POST",
       });
-      const response = await (await request).json();
+      const response = await request.json();
       toast.success(response.message);
     } catch (error: any) {
       setIsSaved((prev) => !prev);

@@ -9,14 +9,17 @@ import { getSimilarEvents, setExpiry } from "@/actions/EventAction";
 import EventCard from "@/components/EventCard";
 import Link from "next/link";
 import SaveEventToggle from "@/components/SaveEventToggle";
+import { getServerSession } from "next-auth";
+import User from "@/models/UserModel";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 interface EventResponse {
   event: IEvent;
 }
 
 async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
+  let isEventSaved = false;
   const { slug } = await params;
-
   const expiredEvent = await setExpiry(slug);
 
   const request = await fetch(
@@ -46,6 +49,17 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
     },
   }: EventResponse = await request.json();
 
+  const session = await getServerSession(authOptions);
+
+  if (session) {
+    const user = await User.findById(session.user.id);
+
+    if (user) {
+      isEventSaved = user.savedEvents.some(
+        (id) => id.toString() === _id.toString(),
+      );
+    }
+  }
   const dateConversion = new Date(date);
   const normalizeDate = dateConversion.toDateString();
 
@@ -63,7 +77,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
         </div>
 
         <span className="flex items-center justify-center mx-auto">
-          <SaveEventToggle slug={slug} isEventSaved={false} />
+          <SaveEventToggle slug={slug} isEventSaved={isEventSaved} />
         </span>
       </div>
 

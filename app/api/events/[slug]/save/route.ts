@@ -3,6 +3,7 @@ import connectDB from "@/lib/connectDB";
 import Event from "@/models/EventModel";
 import { getServerSession } from "next-auth";
 import User from "@/models/UserModel";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function POST(
   req: NextRequest,
@@ -12,7 +13,7 @@ export async function POST(
     await connectDB();
 
     const { slug } = await params;
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json(
         { message: "Unauthorized request" },
@@ -25,7 +26,7 @@ export async function POST(
       return NextResponse.json({ message: "Event not found" }, { status: 404 });
     }
 
-    const user = await User.findOne({ id: session.user.id });
+    const user = await User.findById(session.user.id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
