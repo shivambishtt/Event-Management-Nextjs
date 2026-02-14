@@ -23,9 +23,15 @@ export async function POST(
 
     const event = await Event.findOne({ slug });
     if (!event) {
-      return NextResponse.json({ message: "Event not found" }, { status: 404 });
+      return NextResponse.json({ message: "Event not found" }, { status: 400 });
     }
 
+    if (event.isExpired) {
+      return NextResponse.json(
+        { message: "Cannot save expired event" },
+        { status: 400 },
+      );
+    }
     const user = await User.findById(session.user.id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });

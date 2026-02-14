@@ -82,7 +82,7 @@ function Navbar() {
         {session?.data?.user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="items-center justify-center mt-1.5">
+              <Avatar className="items-center justify-center mt-1.5 hover:cursor-pointer">
                 <AvatarImage src="https://github.com/shadcn" />
                 <AvatarFallback className="bg-red-500 text-white text-center">
                   {initials}
@@ -100,23 +100,40 @@ function Navbar() {
                   </div>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  Profile
+                </DropdownMenuItem>
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>Create Event</DropdownMenuSubTrigger>
+                  <DropdownMenuSubTrigger className="hover:cursor-pointer">
+                    Create Event
+                  </DropdownMenuSubTrigger>
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
-                      <DropdownMenuItem>Hackathon</DropdownMenuItem>
-                      <DropdownMenuItem>Workshop</DropdownMenuItem>
+                      <DropdownMenuItem className="hover:cursor-pointer">
+                        Hackathon
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="hover:cursor-pointer">
+                        Workshop
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>More...</DropdownMenuItem>
+                      <DropdownMenuItem className="hover:cursor-pointer">
+                        More...
+                      </DropdownMenuItem>
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
                 </DropdownMenuSub>
-                <DropdownMenuItem>My Events</DropdownMenuItem>
+                <Link href="/saved-events">
+                  <DropdownMenuItem className="hover:cursor-pointer">
+                    Saved Events
+                  </DropdownMenuItem>
+                </Link>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={handleSignout}>
+                <DropdownMenuItem
+                  className="hover:cursor-pointer hover:bg-gray-700"
+                  onClick={handleSignout}
+                >
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuGroup>

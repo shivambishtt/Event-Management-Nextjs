@@ -4,7 +4,14 @@ function EventTags({ tags }: { tags: string[] }) {
       <h2 className="text-2xl font-semibold">Tags</h2>
       <ul className="flex items-center list-none gap-6">
         {tags.map((tag, id) => {
-          return <li className="bg-gray-900 text-md h-auto w-auto rounded mt-2" key={id}>{tag}</li>;
+          return (
+            <li
+              className=" bg-gray-900 text-md h-auto w-auto rounded p-2"
+              key={id}
+            >
+              {tag}
+            </li>
+          );
         })}
       </ul>
     </div>

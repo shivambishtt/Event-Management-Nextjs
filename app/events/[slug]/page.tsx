@@ -12,6 +12,8 @@ import SaveEventToggle from "@/components/SaveEventToggle";
 import { getServerSession } from "next-auth";
 import User from "@/models/UserModel";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import NoSimilarEvents from "@/components/NoSimilarEvents";
+import EventExpired from "@/components/EventExpired";
 
 interface EventResponse {
   event: IEvent;
@@ -68,7 +70,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const similarEvents: IEvent[] = await getSimilarEvents(slug);
   return (
     <section>
-      <div className="flex items-center">
+      <div className="flex items-center ">
         <div className="max-w-3xl">
           <h1>
             {title} <br />
@@ -77,7 +79,11 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
         </div>
 
         <span className="flex items-center justify-center mx-auto">
-          <SaveEventToggle slug={slug} isEventSaved={isEventSaved} />
+          <SaveEventToggle
+            slug={slug}
+            isEventSaved={isEventSaved}
+            isExpired={isExpired}
+          />
         </span>
       </div>
 
@@ -138,39 +144,31 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
           <EventTags tags={tags} />
         </div>
 
-        {isExpired === true ? (
-          <div className="mt-12">
-            <p>
-              <span className="text-red-400 font-medium">
-                This event has expired. Bookings are closed. <br />
-              </span>
-              Check out other events below. <br />
-              <button className="bg-gray-600 rounded p-1.5">
-                <Link className="" href="/">
-                  More Events
-                </Link>
-              </button>
-            </p>
-          </div>
-        ) : (
-          <aside className="booking-form">
-            <div className="space-y-3 signup-card p-4 bg-[#0c2e249e]">
-              <h2 className="font-semibold text-2xl">Book your spot </h2>
+        <div className="event-details-right h-auto">
+          {isExpired === true ? (
+            <EventExpired />
+          ) : (
+            <aside className="booking-form">
+              <div className="space-y-3 signup-card p-4 bg-[#0c2e249e]">
+                <h2 className="font-semibold text-2xl">Book your spot </h2>
 
-              {bookings > 0 ? (
-                <p>Join {bookings} people who have already booked their spot</p>
-              ) : (
-                <p className="text-sm">Be the first to book your spot </p>
-              )}
-              <BookEvent eventId={_id.toString()} />
-            </div>
-          </aside>
-        )}
+                {bookings > 0 ? (
+                  <p>
+                    Join {bookings} people who have already booked their spot
+                  </p>
+                ) : (
+                  <p className="text-sm">Be the first to book your spot </p>
+                )}
+                <BookEvent eventId={_id.toString()} />
+              </div>
+            </aside>
+          )}
+        </div>
       </div>
       <div>
         <h2 className="text-2xl font-semibold">Similar Events</h2>
         <div>
-          {similarEvents.length > 0 &&
+          {similarEvents.length > 0 ? (
             similarEvents.map((similarEvent: IEvent) => {
               return (
                 <EventCard
@@ -183,7 +181,10 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
                   key={similarEvent._id.toString()}
                 />
               );
-            })}
+            })
+          ) : (
+            <NoSimilarEvents />
+          )}
         </div>
       </div>
     </section>

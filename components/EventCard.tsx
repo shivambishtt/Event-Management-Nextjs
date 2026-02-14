@@ -19,7 +19,7 @@ function EventCard({
   image,
 }: EventCardProps) {
   return (
-    <div className="mt-10">
+    <div className="mt-2">
       <Link href={`/events/${slug}`}>
         {/* Title */}
         <h3 className="text-3xl font-semibold mb-4">{title}</h3>
@@ -28,12 +28,7 @@ function EventCard({
       {/* Meta Info */}
       <div className="flex gap-6 items-center text-gray-400 mb-6">
         <div className="flex gap-2 items-center">
-          <Image
-            src="/icons/calendar.svg"
-            alt="calendar"
-            width={16}
-            height={16}
-          />
+          <Image src="/icons/clock.svg" alt="clock" width={16} height={16} />
           <span>{time}</span>
         </div>
 
