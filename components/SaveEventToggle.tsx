@@ -34,12 +34,18 @@ function SaveEventToggle({ slug, isEventSaved, isExpired }: paramValues) {
   return (
     <>
       {isSaved ? (
-        <Toggle className="hover:cursor-pointer" onClick={handleSaveEvent}>
+        <Toggle
+          className="bg-white text-black hover:cursor-pointer"
+          onClick={handleSaveEvent}
+        >
           <BookmarkIcon className={isSaved ? "fill-current" : ""} />
-          Saved
+          Event Saved
         </Toggle>
       ) : (
-        <Toggle className="hover:cursor-pointer" onClick={handleSaveEvent}>
+        <Toggle
+          className="bg-white text-black hover:cursor-pointer"
+          onClick={handleSaveEvent}
+        >
           <BookmarkIcon className={isSaved ? "fill-current" : ""} />
           Save Event
         </Toggle>

@@ -79,11 +79,15 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
         </div>
 
         <span className="flex items-center justify-center mx-auto">
-          <SaveEventToggle
-            slug={slug}
-            isEventSaved={isEventSaved}
-            isExpired={isExpired}
-          />
+          {!isExpired ? (
+            <SaveEventToggle
+              slug={slug}
+              isEventSaved={isEventSaved}
+              isExpired={isExpired}
+            />
+          ) : (
+            ""
+          )}
         </span>
       </div>
 
