@@ -9,10 +9,14 @@ export interface IEvent extends Document {
   image: string;
   venue: string;
   location: string;
+  latitude: number;
+  longitude: number;
   date: Date;
   time: string;
   mode: string;
   audience: string;
+  maxSeats: number;
+  bookedSeats: number;
   agenda: string[];
   organizer: string;
   tags: string[];
@@ -65,6 +69,12 @@ const EventSchema = new Schema<IEvent>(
       required: [true, "Location is required"],
       trim: true,
     },
+    latitude: {
+      type: Number,
+    },
+    longitude: {
+      type: Number,
+    },
     date: {
       type: Date,
       required: [true, "Date us required"],
@@ -86,6 +96,14 @@ const EventSchema = new Schema<IEvent>(
       type: String,
       required: [true, "Audience is required"],
       trim: true,
+    },
+    maxSeats: {
+      type: Number,
+      required: true,
+    },
+    bookedSeats: {
+      type: Number,
+      default: 0,
     },
     agenda: {
       type: [String],

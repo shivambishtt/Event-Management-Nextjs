@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 type FormValues = {
   email: string;
@@ -70,9 +72,9 @@ function BookEvent({ eventId }: BookEventProps) {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label htmlFor="email">Email Address</label> <br />
-            <input
-              className="bg-teal-700 w-full p-1.5 text-white"
+            <label htmlFor="email">Email</label> <br />
+            <Input
+              className="bg-transparent w-full p-1.5 text-white"
               type="email"
               placeholder="Enter your email"
               {...register("email", { required: "Email is required" })}
@@ -81,12 +83,12 @@ function BookEvent({ eventId }: BookEventProps) {
               <p className="text-red-500">{errors.email.message}</p>
             )}
           </div>
-          <button
-            className="bg-[#66f1ea] text-black px-7 py-1.5 w-full rounded mt-2"
+          <Button
+            className="bg-emerald-700 text-white hover:cursor-pointer px-7 py-1.5 w-full rounded mt-2"
             type="submit"
           >
             Submit
-          </button>
+          </Button>
         </form>
       )}
     </div>

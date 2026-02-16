@@ -1,17 +1,16 @@
 "use client";
 
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import L from "leaflet";
 
-interface Coordinates {
+interface MapProps {
   latitude: number;
   longitude: number;
+  title?: string;
 }
 
-function Map() {
-  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
-
+function Map({ latitude, longitude, title }: MapProps) {
   useEffect(() => {
     // 🔥 Fix default marker icon issue
     delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -23,44 +22,24 @@ function Map() {
       shadowUrl:
         "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
     });
-
-    if (!navigator.geolocation) {
-      alert("Geolocation not supported");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCoordinates({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.error(error);
-        alert("Permission denied or error");
-      },
-    );
   }, []);
 
   return (
     <div className="map-container h-screen w-full">
-      {coordinates && (
-        <MapContainer
-          className="h-full w-full"
-          center={[coordinates.latitude, coordinates.longitude]}
-          zoom={15}
-          scrollWheelZoom={true}
-        >
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[coordinates.latitude, coordinates.longitude]}>
-            <Popup>Your current location</Popup>
-          </Marker>
-        </MapContainer>
-      )}
+      <MapContainer
+        className="h-full w-full"
+        center={[latitude, longitude]}
+        zoom={15}
+        scrollWheelZoom={true}
+      >
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <Marker position={[latitude, longitude]}>
+          <Popup>{title || "Event Location"}</Popup>
+        </Marker>
+      </MapContainer>
     </div>
   );
 }

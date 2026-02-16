@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const event = Object.fromEntries(formData.entries());
+    console.log(event, "from backend");
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
@@ -20,10 +21,13 @@ export async function POST(req: NextRequest) {
     const date = formData.get("date");
     const time = formData.get("time") as string;
     const mode = formData.get("mode") as string;
+    const maxSeats = Number(formData.get("maxSeats") as string);
     const agenda = JSON.parse(formData.get("agenda") as string);
     const tags = JSON.parse(formData.get("tags") as string);
     const audience = formData.get("audience") as string;
     const organizer = formData.get("organizer") as string;
+
+    console.log(event, "event");
 
     const MAX_SIZE_IMAGE: number = 5 * 1024 * 1024;
 
@@ -61,6 +65,12 @@ export async function POST(req: NextRequest) {
 
     const url = (uploadImage as { secure_url: string }).secure_url;
 
+    if (!maxSeats || isNaN(maxSeats) || maxSeats <= 0) {
+      return NextResponse.json({ message: "Invalid  seats" }, { status: 400 });
+    }
+
+    console.log("maxSeats before create:", maxSeats);
+    console.log("typeof maxSeats:", typeof maxSeats);
     const eventCreated = await Event.create({
       title,
       description,
@@ -71,12 +81,16 @@ export async function POST(req: NextRequest) {
       date,
       time,
       mode,
+      maxSeats,
+      bookedSeats: 0,
       agenda,
       tags: tags,
       audience,
       organizer,
       slug: generateSlug(title),
     });
+
+    console.log(eventCreated, "eventcreated");
 
     if (!eventCreated) {
       return NextResponse.json(

@@ -14,6 +14,7 @@ import User from "@/models/UserModel";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import NoSimilarEvents from "@/components/NoSimilarEvents";
 import EventExpired from "@/components/EventExpired";
+import BookingForm from "@/components/BookingForm";
 
 interface EventResponse {
   event: IEvent;
@@ -39,6 +40,10 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
       title,
       description,
       location,
+      latitude,
+      longitude,
+      maxSeats,
+      bookedSeats,
       date,
       mode,
       time,
@@ -119,15 +124,25 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
                 alt="clock"
                 label={time}
               />
+
               {/* location */}
-              <EventDetailItem
-                icon="/icons/pin.svg"
-                alt="location"
-                label={location}
-              />
+              <p>
+                <EventDetailItem
+                  icon="/icons/pin.svg"
+                  alt="location"
+                  label={location}
+                />
+              </p>
+
               {/* mode */}
               <EventDetailItem icon="/icons/mode.svg" alt="mode" label={mode} />
 
+              {/* seats */}
+              <EventDetailItem
+                icon="/icons/audience.svg"
+                alt="mode"
+                label={`Max seats are ${maxSeats}`}
+              />
               {/* audience */}
               <EventDetailItem
                 icon="/icons/audience.svg"
@@ -152,20 +167,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
           {isExpired === true ? (
             <EventExpired />
           ) : (
-            <aside className="booking-form">
-              <div className="space-y-3 signup-card p-4 bg-[#0c2e249e]">
-                <h2 className="font-semibold text-2xl">Book your spot </h2>
-
-                {bookings > 0 ? (
-                  <p>
-                    Join {bookings} people who have already booked their spot
-                  </p>
-                ) : (
-                  <p className="text-sm">Be the first to book your spot </p>
-                )}
-                <BookEvent eventId={_id.toString()} />
-              </div>
-            </aside>
+            <BookingForm bookings={bookings} _id={_id} />
           )}
         </div>
       </div>

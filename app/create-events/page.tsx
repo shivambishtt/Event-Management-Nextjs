@@ -31,6 +31,7 @@ interface FormValues {
   image?: File;
   location: string;
   date: Date;
+  maxSeats: string;
   time: string;
   mode: string;
   agenda: [];
@@ -59,6 +60,7 @@ export default function CreateEvent() {
     formData.append("location", data.location);
     formData.append("time", data.time);
     formData.append("mode", data.mode);
+    formData.append("maxSeats", data.maxSeats);
     formData.append("agenda", JSON.stringify(data.agenda));
     formData.append("tags", JSON.stringify(data.tags));
     formData.append("audience", data.audience);
@@ -79,7 +81,7 @@ export default function CreateEvent() {
     const result = await request.json();
     setIsSubmitting(false);
     toast.success(result.message);
-    reset();
+    // reset();
     redirect("/");
   };
 
@@ -242,6 +244,17 @@ export default function CreateEvent() {
         />
         {errors.organizer && (
           <p className="text-red-500">{errors.organizer.message}</p>
+        )}
+
+        <label htmlFor="maxSeats">Max Seats</label>
+        <Controller
+          name="maxSeats"
+          control={control}
+          rules={{ required: "Max Seats is required" }}
+          render={({ field }) => <Input placeholder="Max Seats" {...field} />}
+        />
+        {errors.maxSeats && (
+          <p className="text-red-500">{errors.maxSeats.message}</p>
         )}
 
         <label htmlFor="tags">Tags</label>
