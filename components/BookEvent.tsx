@@ -11,9 +11,11 @@ type FormValues = {
 
 interface BookEventProps {
   eventId: string;
+  maxSeats: number;
+  bookedSeats: number;
 }
 
-function BookEvent({ eventId }: BookEventProps) {
+function BookEvent({ eventId, maxSeats, bookedSeats }: BookEventProps) {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
 

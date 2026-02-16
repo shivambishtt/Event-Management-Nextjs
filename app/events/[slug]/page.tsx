@@ -71,6 +71,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const normalizeDate = dateConversion.toDateString();
 
   const bookings = 10;
+  const availableSeats = maxSeats - bookedSeats;
 
   const similarEvents: IEvent[] = await getSimilarEvents(slug);
   return (
@@ -141,7 +142,14 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
               <EventDetailItem
                 icon="/icons/audience.svg"
                 alt="mode"
-                label={`Max seats are ${maxSeats}`}
+                label={`Max seats ${maxSeats}`}
+              />
+
+              {/* seats */}
+              <EventDetailItem
+                icon="/icons/audience.svg"
+                alt="mode"
+                label={`Available seats ${availableSeats}`}
               />
               {/* audience */}
               <EventDetailItem
@@ -167,7 +175,12 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
           {isExpired === true ? (
             <EventExpired />
           ) : (
-            <BookingForm bookings={bookings} _id={_id} />
+            <BookingForm
+              bookings={bookings}
+              maxSeats={maxSeats}
+              bookedSeats={bookedSeats}
+              _id={_id}
+            />
           )}
         </div>
       </div>

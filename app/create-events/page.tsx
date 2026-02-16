@@ -81,7 +81,7 @@ export default function CreateEvent() {
     const result = await request.json();
     setIsSubmitting(false);
     toast.success(result.message);
-    // reset();
+    reset();
     redirect("/");
   };
 

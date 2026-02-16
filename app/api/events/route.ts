@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const event = Object.fromEntries(formData.entries());
-    console.log(event, "from backend");
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
@@ -26,8 +25,6 @@ export async function POST(req: NextRequest) {
     const tags = JSON.parse(formData.get("tags") as string);
     const audience = formData.get("audience") as string;
     const organizer = formData.get("organizer") as string;
-
-    console.log(event, "event");
 
     const MAX_SIZE_IMAGE: number = 5 * 1024 * 1024;
 
@@ -89,8 +86,6 @@ export async function POST(req: NextRequest) {
       organizer,
       slug: generateSlug(title),
     });
-
-    console.log(eventCreated, "eventcreated");
 
     if (!eventCreated) {
       return NextResponse.json(

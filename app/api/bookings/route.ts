@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const { eventId, email } = await req.json();
+
     if (!eventId || !email) {
       return NextResponse.json(
         { message: "Event ID and email are required" },
@@ -15,43 +16,49 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const event = await Event.findById(eventId);
-    if (!event) {
-      return NextResponse.json({ message: "Event not found" }, { status: 404 });
-    }
+    const updatedEvent = await Event.findOneAndUpdate(
+      {
+        _id: eventId,
+        isExpired: false,
+        $expr: { $lt: ["$bookedSeats", "$maxSeats"] },
+      },
+      {
+        $inc: { bookedSeats: 1 },
+      },
+      { new: true },
+    );
 
-    if (event.isExpired) {
+    if (!updatedEvent) {
       return NextResponse.json(
-        {
-          message: "Booking closed as event is expired",
-        },
+        { message: "Seats are sold out or event expired" },
         { status: 400 },
       );
     }
 
-    const booking = await Booking.create({ eventId, email });
-    if (!booking) {
+    try {
+      const booking = await Booking.create({ eventId, email });
+
       return NextResponse.json(
         {
-          message: "An unknown error occured while booking",
+          message: "Booking done successfully",
+          booking,
+          success: true,
         },
+        { status: 201 },
+      );
+    } catch (error) {
+      await Event.findByIdAndUpdate(eventId, {
+        $inc: { bookedSeats: -1 },
+      });
+
+      return NextResponse.json(
+        { message: "Booking failed. Try again." },
         { status: 500 },
       );
     }
-
+  } catch (error) {
     return NextResponse.json(
-      {
-        message: "Booking done successfully",
-        booking,
-        success: true,
-      },
-      { status: 201 },
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        message: "Error occured while booking the event",
-      },
+      { message: "Error occurred while booking the event" },
       { status: 500 },
     );
   }
