@@ -26,6 +26,8 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const expiredEvent = await setExpiry(slug);
   const bookings = 10;
 
+  let alreadyBooked :boolean= false;
+
   const request = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
     { cache: "no-store" },
@@ -57,8 +59,16 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
     },
   }: EventResponse = await request.json();
 
+  const session = await getServerSession(authOptions);
+
   if (session) {
     const user = await User.findById(session.user.id);
+
+    const bookingExists = await Booking.findOne({
+      eventId: _id,
+      email: session.user.email,
+    });
+    alreadyBooked = !!bookingExists;
 
     if (user) {
       isEventSaved = user.savedEvents.some(
@@ -174,6 +184,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
             <EventExpired />
           ) : (
             <BookingForm
+              alreadyBooked={alreadyBooked}
               bookings={bookings}
               maxSeats={maxSeats}
               bookedSeats={bookedSeats}
