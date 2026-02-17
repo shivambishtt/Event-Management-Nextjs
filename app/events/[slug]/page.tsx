@@ -7,7 +7,6 @@ import EventTags from "@/components/EventTags";
 import BookEvent from "@/components/BookEvent";
 import { getSimilarEvents, setExpiry } from "@/actions/EventAction";
 import EventCard from "@/components/EventCard";
-import Link from "next/link";
 import SaveEventToggle from "@/components/SaveEventToggle";
 import { getServerSession } from "next-auth";
 import User from "@/models/UserModel";
@@ -15,6 +14,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import NoSimilarEvents from "@/components/NoSimilarEvents";
 import EventExpired from "@/components/EventExpired";
 import BookingForm from "@/components/BookingForm";
+import Booking from "@/models/BookingModel";
 
 interface EventResponse {
   event: IEvent;
@@ -24,6 +24,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   let isEventSaved = false;
   const { slug } = await params;
   const expiredEvent = await setExpiry(slug);
+  const bookings = 10;
 
   const request = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
@@ -56,8 +57,6 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
     },
   }: EventResponse = await request.json();
 
-  const session = await getServerSession(authOptions);
-
   if (session) {
     const user = await User.findById(session.user.id);
 
@@ -70,7 +69,6 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   const dateConversion = new Date(date);
   const normalizeDate = dateConversion.toDateString();
 
-  const bookings = 10;
   const availableSeats = maxSeats - bookedSeats;
 
   const similarEvents: IEvent[] = await getSimilarEvents(slug);

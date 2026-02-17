@@ -9,6 +9,7 @@ interface BookingDetails {
 }
 
 function BookingForm({ bookings, _id, maxSeats, bookedSeats }: BookingDetails) {
+  const availableSeats = maxSeats - bookedSeats;
   return (
     <aside className="booking-form">
       <div className="space-y-3 rounded-xl signup-card p-4 bg-[#0c2e249e]">
@@ -17,8 +18,9 @@ function BookingForm({ bookings, _id, maxSeats, bookedSeats }: BookingDetails) {
         </h2>
 
         {bookings > 0 ? (
-          <p className="flex justify-center px-2">
-            Join {bookedSeats} people who have already booked their spot
+          <p className="flex justify-center text-center px-2">
+            Join {bookedSeats} people who already booked their spot 🚀 <br />
+            Hurry up⌛! Only {availableSeats} seats are left
           </p>
         ) : (
           <p className="text-sm">Be the first to book your spot </p>

@@ -16,6 +16,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const bookingExists = await Booking.findOne({ eventId, email });
+    if (bookingExists) {
+      return NextResponse.json(
+        { message: "You have already booked this event" },
+        { status: 409 },
+      );
+    }
+
     const updatedEvent = await Event.findOneAndUpdate(
       {
         _id: eventId,
@@ -36,21 +44,20 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const booking = await Booking.create({ eventId, email });
-
-      return NextResponse.json(
-        {
-          message: "Booking done successfully",
-          booking,
-          success: true,
-        },
-        { status: 201 },
-      );
-    } catch (error) {
-      await Event.findByIdAndUpdate(eventId, {
-        $inc: { bookedSeats: -1 },
+      const booking = await Booking.create({
+        eventId,
+        email,
       });
 
+      return NextResponse.json(
+        { message: "Booking created successfully", booking, success: true },
+        {
+          status: 200,
+        },
+      );
+    } catch (error) {
+      console.error("Booking creation failed:", error);
+      await Event.findByIdAndUpdate(eventId, { $inc: { bookedSeats: -1 } });
       return NextResponse.json(
         { message: "Booking failed. Try again." },
         { status: 500 },
