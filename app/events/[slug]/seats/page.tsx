@@ -72,8 +72,10 @@ async function Seats({ params }: { params: { slug: string } }) {
             <span className="text-xs mt-1 text-gray-400">{seat}</span>
           </div>
         ))}
+      </div>
+      <div className=" mt-2 flex justify-center">
         <div
-          className=" bg-black/60 backdrop-blur-md 
+          className="bg-black/60 backdrop-blur-md 
                     p-4 rounded-xl shadow-lg text-sm"
         >
           <p className="text-xs uppercase tracking-wider text-gray-400 mb-2">
