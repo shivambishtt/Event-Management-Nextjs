@@ -3,10 +3,12 @@ import connectDB from "@/lib/connectDB";
 import Event from "@/models/EventModel";
 import { generateSlug } from "@/models/EventModel";
 import { v2 as cloudinary } from "cloudinary";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
+    const token = await getToken({ req });
 
     const formData = await req.formData();
     const event = Object.fromEntries(formData.entries());
@@ -66,8 +68,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Invalid  seats" }, { status: 400 });
     }
 
-    console.log("maxSeats before create:", maxSeats);
-    console.log("typeof maxSeats:", typeof maxSeats);
+    if (!token || token.role !== "admin") {
+      return NextResponse.json(
+        {
+          messge: "Unauthorized request.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     const eventCreated = await Event.create({
       title,
       description,
@@ -120,9 +131,11 @@ export async function GET() {
   try {
     await connectDB();
 
-    const events = await Event.find().sort({
-      createdAt: -1,
-    });
+    const events = await Event.find()
+      .sort({
+        createdAt: -1,
+      })
+      .limit(3);
     if (!events) {
       return NextResponse.json(
         { message: "Oops No events found." },

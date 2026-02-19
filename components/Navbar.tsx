@@ -42,7 +42,7 @@ function Navbar() {
 
   return (
     <header>
-      <nav className="h-20 mt-4 w-2/3 border border-transparent  rounded-4xl ">
+      <nav className="h-20 mt-4 w-2/3 mx-auto rounded-4xl sticky  bg-zinc-900/80 ">
         <Link href="/" className="app- flex gap-2 items-center">
           <Image src="/icons/logo.png" alt="appLogo" width={24} height={24} />
           <p>Dev Events</p>

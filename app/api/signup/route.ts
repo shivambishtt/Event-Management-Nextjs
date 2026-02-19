@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     const validatedData = SignupValidation.parse(body);
 
-    const { email, name, password } = validatedData;
+    const { email, name, password, role } = validatedData;
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       name,
       email,
       password: hashedPassword,
+      role,
       provider: "credentials",
     });
 

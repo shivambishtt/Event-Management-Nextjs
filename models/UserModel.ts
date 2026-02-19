@@ -2,13 +2,19 @@ import mongoose, { Document, Schema } from "mongoose";
 
 import bcrypt from "bcrypt";
 
+enum Role {
+  admin = "admin",
+  user = "user",
+}
+
 interface User extends Document {
   name?: string;
   email: string;
   password?: string;
   provider: "credentials" | "google" | "github";
   authUserId?: string;
-  savedEvents: Event[];
+  savedEvents: mongoose.Types.ObjectId[];
+  role: Role;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +41,11 @@ const userSchema = new Schema<User>(
     authUserId: {
       type: String,
       index: true,
+    },
+    role: {
+      type: String,
+      enum: Object.values(Role),
+      default: Role.user,
     },
     savedEvents: [
       {

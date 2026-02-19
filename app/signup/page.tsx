@@ -112,10 +112,13 @@ function Signup() {
           </CardContent>
 
           <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full hover:cursor-pointer bg-emerald-700"
+            >
               Signup
             </Button>
-            <span className="flex items-center justify-center gap-2 mt-2">
+            <span className="flex items-center justify-center gap-5 mt-3">
               <Button
                 onClick={() => signIn("google", { callbackUrl: "/" })}
                 variant="outline"

@@ -1,13 +1,12 @@
-"use client";
-
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 function FindEventButton() {
   return (
     <div className="flex items-center justify-center">
-      <button className="mt-6 bg-gray-600 p-1 rounded">
+      <Button className="mt-6 bg-emerald-700  p-1 rounded">
         <Link href={`/events`}>Find Events</Link>
-      </button>
+      </Button>
     </div>
   );
 }

@@ -14,6 +14,20 @@ async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
+  if (pathname.startsWith("/create-events")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/signin", req.url));
+    }
+
+    if (token.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  if (token?.role !== "admin" && pathname.startsWith("/create-events")) {
+    return NextResponse.redirect(new URL("/signin", req.url));
+  }
+
   if (pathname.startsWith("/create-events") || pathname.startsWith("/events")) {
     if (!token) {
       return NextResponse.redirect(new URL("/signin", req.url));
