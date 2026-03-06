@@ -4,7 +4,6 @@ import Image from "next/image";
 import EventDetailItem from "@/components/EventDetailItems";
 import EventAgenda from "@/components/EventAgenda";
 import EventTags from "@/components/EventTags";
-import BookEvent from "@/components/BookEvent";
 import { getSimilarEvents, setExpiry } from "@/actions/EventAction";
 import EventCard from "@/components/EventCard";
 import SaveEventToggle from "@/components/SaveEventToggle";
@@ -23,10 +22,9 @@ interface EventResponse {
 async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
   let isEventSaved = false;
   const { slug } = await params;
-  const expiredEvent = await setExpiry(slug);
   const bookings = 10;
 
-  let alreadyBooked :boolean= false;
+  let alreadyBooked: boolean = false;
 
   const request = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/events/${slug}`,
@@ -43,8 +41,6 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
       title,
       description,
       location,
-      latitude,
-      longitude,
       maxSeats,
       bookedSeats,
       date,
@@ -72,7 +68,7 @@ async function EventDetails({ params }: { params: Promise<{ slug: string }> }) {
 
     if (user) {
       isEventSaved = user.savedEvents.some(
-        (id) => id.toString() === _id.toString(),
+        (id: string) => id.toString() === _id.toString(),
       );
     }
   }

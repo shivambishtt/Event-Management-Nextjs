@@ -1,12 +1,15 @@
 import FindEventButton from "@/components/FindEventButton/FindEventButton";
 import EventCard from "@/components/EventCard";
-import { IEvent } from "@/models/EventModel";
+import Event from "@/models/EventModel";
+import connectDB from "@/lib/connectDB";
+import { IEventPreview } from "./events/page";
 
 async function page() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/events`);
-
-  const { events } = await response.json();
-
+  await connectDB();
+  const events = await Event.find()
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .lean<IEventPreview[]>();
   return (
     <>
       <section>
@@ -19,17 +22,14 @@ async function page() {
           Confereneces | Hackathons | Meetings
         </p>
         <FindEventButton />
-        {/* Events Section */}
 
         <div className="mt-20">
           <h2 className="font-semibold text-4xl">Featured Events</h2>
           <br />
           <ul>
-            {events &&
-              events.length > 0 &&
-              events.map((event: IEvent) => {
-                return <EventCard key={event.slug} {...event} />;
-              })}
+            {events.map((event) => {
+              return <EventCard key={event.slug} {...event} />;
+            })}
           </ul>
         </div>
       </section>

@@ -1,30 +1,37 @@
 import EventCard from "@/components/EventCard";
+import connectDB from "@/lib/connectDB";
+import Event from "@/models/EventModel";
+import { Types } from "mongoose";
 
-type Event = {
-  _id: string;
+export interface IEventPreview {
+  _id: Types.ObjectId;
   title: string;
   description: string;
   image: string;
   location: string;
   slug: string;
   time: string;
-};
+}
 async function EventPage() {
-  const request = await fetch(`http://localhost:3000/api/events`);
-  const { events }: { events: Event[] } = await request.json();
+  await connectDB();
+  const events = await Event.find()
+    .select("title description image location slug time")
+    .sort({ createdAt: -1 })
+    .limit(3)
+    .lean<IEventPreview[]>();
 
   return (
     <div>
-      {events?.map((event: Event) => {
+      {events.map((event: IEventPreview) => {
         return (
-          <div key={event._id}>
+          <div key={event._id.toString()}>
             <EventCard
-              title={event?.title}
+              title={event.title}
               description={event.description}
-              image={event?.image}
+              image={event.image}
               location={event?.location}
-              slug={event?.slug}
-              time={event?.time}
+              slug={event.slug}
+              time={event.time}
             />
           </div>
         );

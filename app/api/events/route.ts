@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
-import Event from "@/models/EventModel";
-import { generateSlug } from "@/models/EventModel";
-import { v2 as cloudinary } from "cloudinary";
+import Event, { generateSlug } from "@/models/EventModel";
+import { uploadImageToCloudinary } from "@/lib/imageupload";
 import { getToken } from "next-auth/jwt";
 
 export async function POST(req: NextRequest) {
@@ -10,117 +9,82 @@ export async function POST(req: NextRequest) {
     await connectDB();
     const token = await getToken({ req });
 
-    const formData = await req.formData();
-    const event = Object.fromEntries(formData.entries());
-
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const overview = formData.get("overview") as string;
-    const venue = formData.get("venue") as string;
-    const image = formData.get("image") as File;
-    const location = formData.get("location") as string;
-    const date = formData.get("date");
-    const time = formData.get("time") as string;
-    const mode = formData.get("mode") as string;
-    const maxSeats = Number(formData.get("maxSeats") as string);
-    const agenda = JSON.parse(formData.get("agenda") as string);
-    const tags = JSON.parse(formData.get("tags") as string);
-    const audience = formData.get("audience") as string;
-    const organizer = formData.get("organizer") as string;
-
-    const MAX_SIZE_IMAGE: number = 5 * 1024 * 1024;
-
-    if (!image) {
-      return NextResponse.json(
-        { message: "Please upload image first" },
-        { status: 400 },
-      );
-    }
-
-    if (image.size > MAX_SIZE_IMAGE) {
-      return NextResponse.json({
-        message: "Please upload image less than 5 Mb",
-      });
-    }
-
-    // image conversion to buffer
-    const arrayBuffer = await image.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const uploadImage = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            resource_type: "image",
-            folder: "eventmanagement",
-          },
-          (error, success) => {
-            if (error) reject(error);
-            resolve(success);
-          },
-        )
-        .end(buffer);
-    });
-
-    const url = (uploadImage as { secure_url: string }).secure_url;
-
-    if (!maxSeats || isNaN(maxSeats) || maxSeats <= 0) {
-      return NextResponse.json({ message: "Invalid  seats" }, { status: 400 });
-    }
-
     if (!token || token.role !== "admin") {
       return NextResponse.json(
-        {
-          messge: "Unauthorized request.",
-        },
-        {
-          status: 400,
-        },
+        { message: "Unauthorized request" },
+        { status: 401 },
       );
     }
+    const formData = await req.formData();
+    const data = Object.fromEntries(formData.entries()) as Record<
+      string,
+      string
+    >;
 
-    const eventCreated = await Event.create({
+    const {
       title,
       description,
       overview,
       venue,
-      image: url,
-      location,
       date,
       time,
       mode,
       maxSeats,
-      bookedSeats: 0,
       agenda,
-      tags: tags,
+      tags,
+      audience,
+      organizer,
+    } = data;
+
+    // convert types for formData
+    const parsedDate = new Date(date);
+    const parsedMaxSeats = Number(maxSeats);
+    const parsedAgenda = JSON.parse(agenda);
+    const parsedTags = JSON.parse(tags);
+
+    if (!parsedMaxSeats || isNaN(parsedMaxSeats) || parsedMaxSeats <= 0) {
+      return NextResponse.json(
+        { message: "Invalid seat count" },
+        { status: 400 },
+      );
+    }
+
+    // cloudinary image logic
+    const image = formData.get("image") as File;
+    const imageUrl = await uploadImageToCloudinary(image, "eventmanagement");
+
+    const event = await Event.create({
+      title,
+      description,
+      overview,
+      venue,
+      image: imageUrl,
+      date: parsedDate,
+      time,
+      mode,
+      maxSeats: parsedMaxSeats,
+      bookedSeats: 0,
+      agenda: parsedAgenda,
+      tags: parsedTags,
       audience,
       organizer,
       slug: generateSlug(title),
     });
 
-    if (!eventCreated) {
-      return NextResponse.json(
-        { message: "Error occured while creating the event" },
-        { status: 500 },
-      );
-    }
-
     return NextResponse.json(
-      { message: "Event successfully created", event: eventCreated },
-      { status: 200 },
+      {
+        message: "Event created successfully",
+        event,
+      },
+      { status: 201 },
     );
   } catch (error) {
-    console.error("Error creating event:", error);
-
-    let errorMessage = "An unknown error occurred";
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    console.error("Event creation error:", error);
 
     return NextResponse.json(
       {
-        message: errorMessage,
-        error: error instanceof Error ? error.message : String(error),
+        message: "Something went wrong",
+        error: error instanceof Error ? error.message : error,
       },
       { status: 500 },
     );
@@ -131,24 +95,21 @@ export async function GET() {
   try {
     await connectDB();
 
-    const events = await Event.find()
-      .sort({
-        createdAt: -1,
-      })
-      .limit(3);
-    if (!events) {
-      return NextResponse.json(
-        { message: "Oops No events found." },
-        { status: 404 },
-      );
-    }
+    const events = await Event.find().sort({ createdAt: -1 }).limit(3).lean();
+
     return NextResponse.json(
-      { message: "Events fetched successfully", events },
+      {
+        message: "Events fetched successfully",
+        events,
+      },
       { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Error occured while fetching the events", error },
+      {
+        message: "Error fetching events",
+        error,
+      },
       { status: 500 },
     );
   }
