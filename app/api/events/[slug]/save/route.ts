@@ -51,7 +51,7 @@ export async function POST(
       saved: !alreadySaved,
       message: "Saved event updated successfully",
     });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
       { message: "An unknown error occured" },
       { status: 500 },
